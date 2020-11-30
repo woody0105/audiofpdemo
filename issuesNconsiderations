@@ -1,0 +1,19 @@
+installation of dejavu:
+ - psycopg2==2.8.3 installation issue 
+	 error message:Error: pg_config executable not found.
+	 Please add the directory containing pg_config to the PATH
+	 
+	 solution: sudo apt-get install libpq-dev
+
+ - pyaudio installation issue
+ 	error message: fatal error: portaudio.h: No such file or directory
+    compilation terminated.
+    error: command 'x86_64-linux-gnu-gcc' failed with exit status 1
+
+    solution: sudo apt-get install portaudio19-dev python-pyaudio python3-pyaudio
+
+Storage Issue:
+	62 music snippet of 30 second each produces 711382 fingerprints. Is there a way to kind of tradeoff between accuracy and storage/speed???
+
+	
+
