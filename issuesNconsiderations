@@ -24,5 +24,18 @@ Storage Considerations:
 
 	https://core.ac.uk/download/pdf/189234543.pdf
 
+Parameter Tuning:
+	parameters can be tuned to reduce the # of fingerprints per song at a cost of potentially compromised accuracy.
+
+	Test:
+		FINGERPRINT_REDUCTION: # of bits to grab from the SHA1 hash in the fp calculation
+
+		PEAK_NEIGHBORHOOD_SIZE: # of cells around an amplitude peak 
+
+	Test Result: 
+		reducing FINGERPRINT_REDUCTION from 20 to 10, I got from 700k fingerprints to 200k fingerprints.
+		increasing the PEAK_NEIGHBORHOOD_SIZE from 10 to 50 reduced it down further to 34k fingerprints.
+	
+
 	
 
