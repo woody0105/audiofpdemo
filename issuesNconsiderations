@@ -15,5 +15,14 @@ installation of dejavu:
 Storage Issue:
 	62 music snippet of 30 second each produces 711382 fingerprints. Is there a way to kind of tradeoff between accuracy and storage/speed???
 
+
+Test Result:
+	already fingerprinted music is automatically skipped.
+
+Storage Considerations:
+	https://emysound.com/blog/open-source/2020/06/12/how-audio-fingerprinting-works.html#:~:text=From%20a%20higher%20level%2C%20all,possible%20with%20the%20smallest%20footprint.&text=We%20need%20at%20least%2040,10*sizeof(int)%20.
+
+	https://core.ac.uk/download/pdf/189234543.pdf
+
 	
 
