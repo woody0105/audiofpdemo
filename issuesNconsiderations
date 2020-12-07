@@ -35,6 +35,9 @@ Parameter Tuning:
 	Test Result: 
 		reducing FINGERPRINT_REDUCTION from 20 to 10, I got from 700k fingerprints to 200k fingerprints.
 		increasing the PEAK_NEIGHBORHOOD_SIZE from 10 to 50 reduced it down further to 34k fingerprints.
+
+Test Code Debug:
+	subprocess code, change python to python3, multiple versions installed.
 	
 
 	
