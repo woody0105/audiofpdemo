@@ -154,7 +154,7 @@ class CommonDatabase(BaseDatabase, metaclass=abc.ABCMeta):
         """
         return self.query(None)
 
-    def insert_hashes(self, song_id: int, hashes: List[Tuple[str, int]], batch_size: int = 1000) -> None:
+    def insert_hashes(self, title, artist, song_id: int, hashes: List[Tuple[str, int]], batch_size: int = 1000) -> None:
         """
         Insert a multitude of fingerprints.
 
@@ -164,7 +164,7 @@ class CommonDatabase(BaseDatabase, metaclass=abc.ABCMeta):
             - offset: Offset this hash was created from/at.
         :param batch_size: insert batches.
         """
-        values = [(song_id, hsh, int(offset)) for hsh, offset in hashes]
+        values = [(song_id, title, artist, hsh, int(offset)) for hsh, offset in hashes]
 
         with self.cursor() as cur:
             for index in range(0, len(hashes), batch_size):

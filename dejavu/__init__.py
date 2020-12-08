@@ -5,6 +5,7 @@ import traceback
 from itertools import groupby
 from time import time
 from typing import Dict, List, Tuple
+from chromaprint.chromaprint import get_acoustinfo
 
 import dejavu.logic.decoder as decoder
 from dejavu.base_classes.base_database import get_database
@@ -99,7 +100,7 @@ class Dejavu:
         # Loop till we have all of them
         while True:
             try:
-                song_name, hashes, file_hash = next(iterator)
+                song_name, hashes, file_hash, title, artist = next(iterator)
             except multiprocessing.TimeoutError:
                 continue
             except StopIteration:
@@ -110,8 +111,7 @@ class Dejavu:
                 traceback.print_exc(file=sys.stdout)
             else:
                 sid = self.db.insert_song(song_name, file_hash, len(hashes))
-
-                self.db.insert_hashes(sid, hashes)
+                self.db.insert_hashes(title, artist, sid, hashes)
                 self.db.set_song_fingerprinted(sid)
                 self.__load_fingerprinted_audio_hashes()
 
@@ -236,9 +236,9 @@ class Dejavu:
 
         song_name, extension = os.path.splitext(os.path.basename(file_name))
 
-        fingerprints, file_hash = Dejavu.get_file_fingerprints(file_name, limit, print_output=True)
+        fingerprints, file_hash, title, artist = Dejavu.get_file_fingerprints(file_name, limit, print_output=True)
 
-        return song_name, fingerprints, file_hash
+        return song_name, fingerprints, file_hash, title, artist
 
     @staticmethod
     def get_file_fingerprints(file_name: str, limit: int, print_output: bool = False):
@@ -255,5 +255,5 @@ class Dejavu:
                 print(f"Finished channel {channeln}/{channel_amount} for {file_name}")
 
             fingerprints |= set(hashes)
-
-        return fingerprints, file_hash
+        title, artist = get_acoustinfo(file_name)
+        return fingerprints, file_hash, title, artist

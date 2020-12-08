@@ -36,6 +36,8 @@ SONGS_TABLENAME = "songs"
 # SONGS FIELDS
 FIELD_SONG_ID = 'song_id'
 FIELD_SONGNAME = 'song_name'
+FIELD_SONGTITLE = 'song_title'
+FIELD_ARTIST = 'artist'
 FIELD_FINGERPRINTED = "fingerprinted"
 FIELD_FILE_SHA1 = 'file_sha1'
 FIELD_TOTAL_HASHES = 'total_hashes'

@@ -7,7 +7,7 @@ from dejavu.base_classes.common_database import CommonDatabase
 from dejavu.config.settings import (FIELD_FILE_SHA1, FIELD_FINGERPRINTED,
                                     FIELD_HASH, FIELD_OFFSET, FIELD_SONG_ID,
                                     FIELD_SONGNAME, FIELD_TOTAL_HASHES,
-                                    FINGERPRINTS_TABLENAME, SONGS_TABLENAME)
+                                    FINGERPRINTS_TABLENAME, SONGS_TABLENAME, FIELD_SONGTITLE, FIELD_ARTIST)
 
 
 class MySQLDatabase(CommonDatabase):
@@ -32,6 +32,8 @@ class MySQLDatabase(CommonDatabase):
         CREATE TABLE IF NOT EXISTS `{FINGERPRINTS_TABLENAME}` (
             `{FIELD_HASH}` BINARY(10) NOT NULL
         ,   `{FIELD_SONG_ID}` MEDIUMINT UNSIGNED NOT NULL
+        ,   `{FIELD_SONGTITLE}` VARCHAR(250) NOT NULL
+        ,   `{FIELD_ARTIST}` VARCHAR(250) NOT NULL
         ,   `{FIELD_OFFSET}` INT UNSIGNED NOT NULL
         ,   `date_created` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
         ,   `date_modified` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -47,9 +49,11 @@ class MySQLDatabase(CommonDatabase):
     INSERT_FINGERPRINT = f"""
         INSERT IGNORE INTO `{FINGERPRINTS_TABLENAME}` (
                 `{FIELD_SONG_ID}`
+            ,   `{FIELD_SONGTITLE}`
+            ,   `{FIELD_ARTIST}`
             ,   `{FIELD_HASH}`
             ,   `{FIELD_OFFSET}`)
-        VALUES (%s, UNHEX(%s), %s);
+        VALUES (%s, %s, %s, UNHEX(%s), %s);
     """
 
     INSERT_SONG = f"""
