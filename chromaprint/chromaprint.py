@@ -1,10 +1,11 @@
 import requests
 import subprocess
+import time
 from os import listdir, makedirs, walk
 from os.path import basename, exists, isfile, join, splitext
 
 test_folder = "mp3"
-client_id = "AYumMjlCKAs"
+client_id = "WqnBlfUPnJ"
 acoust_url = 'https://api.acoustid.org/v2/lookup'
 
 
@@ -25,13 +26,31 @@ def get_acoustinfo(f):
         "fingerprint": fp
     }
 
-    res = requests.post(url=acoust_url, params=req_data)
-    if res.status_code != 200:
-        print('AcoustID failed.\n')
-        return '', ''
-    music_info = res.json()
-    title = music_info['results'][0]['recordings'][0]['title']
-    artists = music_info['results'][0]['recordings'][0]['artists']
-    return title, artists[0]['name']
+    # res = requests.post(url=acoust_url, params=req_data)
+    tries = 3
+    for i in range(tries):
+        res = requests.post(url=acoust_url, params=req_data)
+        if res.status_code == 200:
+            music_info = res.json()
+            if len(music_info['results']) == 0:
+                return 'noresult', 'noresult'
+            title, artists = None, None
+            for recordingsinfo in music_info['results'][0]['recordings']:
+                if 'title' in recordingsinfo:
+                    title = recordingsinfo['title']
+                    artists = recordingsinfo['artists']
+                    break
+            # print("artist:" + artists[0]['name'] + " title:" + title)
+            return title, artists[0]['name']
+        else:
+            print("Bad response from acoustid api, retrying in 1 second...")
+            time.sleep(1)
+            continue
 
-# title, artist = get_acoustinfo("Brad-Sucks--Total-Breakdown.mp3")
+    return None, None
+
+    # if res.status_code != 200:
+    #     print('AcoustID failed.\n')
+    #     return None, None
+
+

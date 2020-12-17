@@ -18,6 +18,8 @@ class MySQLDatabase(CommonDatabase):
         CREATE TABLE IF NOT EXISTS `{SONGS_TABLENAME}` (
             `{FIELD_SONG_ID}` MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT
         ,   `{FIELD_SONGNAME}` VARCHAR(250) NOT NULL
+        ,   `{FIELD_SONGTITLE}` VARCHAR(250) NOT NULL
+        ,   `{FIELD_ARTIST}` VARCHAR(250) NOT NULL
         ,   `{FIELD_FINGERPRINTED}` TINYINT DEFAULT 0
         ,   `{FIELD_FILE_SHA1}` BINARY(20) NOT NULL
         ,   `{FIELD_TOTAL_HASHES}` INT NOT NULL DEFAULT 0
@@ -57,8 +59,8 @@ class MySQLDatabase(CommonDatabase):
     """
 
     INSERT_SONG = f"""
-        INSERT INTO `{SONGS_TABLENAME}` (`{FIELD_SONGNAME}`,`{FIELD_FILE_SHA1}`,`{FIELD_TOTAL_HASHES}`)
-        VALUES (%s, UNHEX(%s), %s);
+        INSERT INTO `{SONGS_TABLENAME}` (`{FIELD_SONGNAME}`,`{FIELD_SONGTITLE}`,`{FIELD_ARTIST}`,`{FIELD_FILE_SHA1}`,`{FIELD_TOTAL_HASHES}`)
+        VALUES (%s, %s, %s, UNHEX(%s), %s);
     """
 
     # SELECTS
@@ -77,7 +79,7 @@ class MySQLDatabase(CommonDatabase):
     SELECT_ALL = f"SELECT `{FIELD_SONG_ID}`, `{FIELD_OFFSET}` FROM `{FINGERPRINTS_TABLENAME}`;"
 
     SELECT_SONG = f"""
-        SELECT `{FIELD_SONGNAME}`, HEX(`{FIELD_FILE_SHA1}`) AS `{FIELD_FILE_SHA1}`, `{FIELD_TOTAL_HASHES}`
+        SELECT `{FIELD_SONGNAME}`, `{FIELD_SONGTITLE}`, `{FIELD_ARTIST}`, HEX(`{FIELD_FILE_SHA1}`) AS `{FIELD_FILE_SHA1}`, `{FIELD_TOTAL_HASHES}`
         FROM `{SONGS_TABLENAME}`
         WHERE `{FIELD_SONG_ID}` = %s;
     """
@@ -132,7 +134,7 @@ class MySQLDatabase(CommonDatabase):
         # the previous process.
         Cursor.clear_cache()
 
-    def insert_song(self, song_name: str, file_hash: str, total_hashes: int) -> int:
+    def insert_song(self, song_name: str, title:str, artist: str, file_hash: str, total_hashes: int) -> int:
         """
         Inserts a song name into the database, returns the new
         identifier of the song.
@@ -143,7 +145,7 @@ class MySQLDatabase(CommonDatabase):
         :return: the inserted id.
         """
         with self.cursor() as cur:
-            cur.execute(self.INSERT_SONG, (song_name, file_hash, total_hashes))
+            cur.execute(self.INSERT_SONG, (song_name, title, artist, file_hash, total_hashes))
             return cur.lastrowid
 
     def __getstate__(self):

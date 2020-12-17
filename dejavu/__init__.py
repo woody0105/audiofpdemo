@@ -12,6 +12,8 @@ from dejavu.base_classes.base_database import get_database
 from dejavu.config.settings import (DEFAULT_FS, DEFAULT_OVERLAP_RATIO,
                                     DEFAULT_WINDOW_SIZE, FIELD_FILE_SHA1,
                                     FIELD_TOTAL_HASHES,
+                                    FIELD_SONGTITLE,
+                                    FIELD_ARTIST,
                                     FINGERPRINTED_CONFIDENCE,
                                     FINGERPRINTED_HASHES, HASHES_MATCHED,
                                     INPUT_CONFIDENCE, INPUT_HASHES, OFFSET,
@@ -80,6 +82,10 @@ class Dejavu:
         else:
             nprocesses = 1 if nprocesses <= 0 else nprocesses
 
+        # nick for debug test
+        # nprocesses = 1
+        ####
+
         pool = multiprocessing.Pool(nprocesses)
 
         filenames_to_fingerprint = []
@@ -87,6 +93,7 @@ class Dejavu:
             # don't refingerprint already fingerprinted files
             if decoder.unique_hash(filename) in self.songhashes_set:
                 print(f"{filename} already fingerprinted, continuing...")
+                os.remove(filename)
                 continue
 
             filenames_to_fingerprint.append(filename)
@@ -101,6 +108,8 @@ class Dejavu:
         while True:
             try:
                 song_name, hashes, file_hash, title, artist = next(iterator)
+                if title == None:
+                    continue
             except multiprocessing.TimeoutError:
                 continue
             except StopIteration:
@@ -110,7 +119,7 @@ class Dejavu:
                 # Print traceback because we can't reraise it here
                 traceback.print_exc(file=sys.stdout)
             else:
-                sid = self.db.insert_song(song_name, file_hash, len(hashes))
+                sid = self.db.insert_song(song_name, title, artist, file_hash, len(hashes))
                 self.db.insert_hashes(title, artist, sid, hashes)
                 self.db.set_song_fingerprinted(sid)
                 self.__load_fingerprinted_audio_hashes()
@@ -198,6 +207,8 @@ class Dejavu:
             song = self.db.get_song_by_id(song_id)
 
             song_name = song.get(SONG_NAME, None)
+            song_title = song.get(FIELD_SONGTITLE, None)
+            artist = song.get(FIELD_ARTIST, None)
             song_hashes = song.get(FIELD_TOTAL_HASHES, None)
             nseconds = round(float(offset) / DEFAULT_FS * DEFAULT_WINDOW_SIZE * DEFAULT_OVERLAP_RATIO, 5)
             hashes_matched = dedup_hashes[song_id]
@@ -205,6 +216,8 @@ class Dejavu:
             song = {
                 SONG_ID: song_id,
                 SONG_NAME: song_name.encode("utf8"),
+                FIELD_SONGTITLE: song_title.encode("utf8"),
+                FIELD_ARTIST: artist.encode("utf8"),
                 INPUT_HASHES: queried_hashes,
                 FINGERPRINTED_HASHES: song_hashes,
                 HASHES_MATCHED: hashes_matched,
