@@ -30,7 +30,7 @@ Parameter Tuning:
 	Test:
 		FINGERPRINT_REDUCTION: # of bits to grab from the SHA1 hash in the fp calculation
 
-		PEAK_NEIGHBORHOOD_SIZE: # of cells around an amplitude peak 
+		PEAK_NEIGHBORHOOD_SIZE: # of cells around an amplitude peak, increasing the size by n times results in 1/n^2 of storage
 
 	Test Result: 
 		reducing FINGERPRINT_REDUCTION from 20 to 10, I got from 700k fingerprints to 200k fingerprints.
@@ -38,6 +38,10 @@ Parameter Tuning:
 
 Test Code Debug:
 	subprocess code, change python to python3, multiple versions installed.
+
+Issue:
+    When building fingerprint db, '_mysql_connector.MySQLInterfaceError: Incorrect string value: '\xC4\xABve' for column 'artist' at row 1'
+    solution:ALTER DATABASE dejavu CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 	
 
 	

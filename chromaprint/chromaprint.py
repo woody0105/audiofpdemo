@@ -26,7 +26,6 @@ def get_acoustinfo(f):
         "fingerprint": fp
     }
 
-    # res = requests.post(url=acoust_url, params=req_data)
     tries = 3
     for i in range(tries):
         res = requests.post(url=acoust_url, params=req_data)
@@ -40,7 +39,7 @@ def get_acoustinfo(f):
                     title = recordingsinfo['title']
                     artists = recordingsinfo['artists']
                     break
-            # print("artist:" + artists[0]['name'] + " title:" + title)
+            print("artist:" + artists[0]['name'] + " title:" + title)
             return title, artists[0]['name']
         else:
             print("Bad response from acoustid api, retrying in 1 second...")
@@ -49,8 +48,5 @@ def get_acoustinfo(f):
 
     return None, None
 
-    # if res.status_code != 200:
-    #     print('AcoustID failed.\n')
-    #     return None, None
 
 
