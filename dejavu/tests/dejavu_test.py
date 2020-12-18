@@ -119,7 +119,7 @@ class DejavuTest:
             song = "_".join(splits[0:len(get_audio_name_from_path(f).split("_")) - 2])
             line = self.get_line_id(song)
             result = subprocess.check_output([
-                "python",
+                "python3",
                 "dejavu.py",
                 '-r',
                 'file',
