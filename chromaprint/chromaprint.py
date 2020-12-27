@@ -31,7 +31,7 @@ def get_acoustinfo(f):
         res = requests.post(url=acoust_url, params=req_data)
         if res.status_code == 200:
             music_info = res.json()
-            if len(music_info['results']) == 0:
+            if len(music_info['results']) == 0 or 'recordings' not in music_info['results'][0]:
                 return 'noresult', 'noresult'
             title, artists = None, None
             for recordingsinfo in music_info['results'][0]['recordings']:

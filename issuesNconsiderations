@@ -42,6 +42,8 @@ Test Code Debug:
 Issue:
     When building fingerprint db, '_mysql_connector.MySQLInterfaceError: Incorrect string value: '\xC4\xABve' for column 'artist' at row 1'
     solution:ALTER DATABASE dejavu CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+    		 ALTER TABLE dejavu.songs CONVERT TO CHARACTER SET utf8;
+
 	
 
 	
