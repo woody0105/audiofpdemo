@@ -31,7 +31,7 @@ class DejavuTest:
         self.test_files = [
             f for f in listdir(self.test_folder)
             if isfile(join(self.test_folder, f))
-            and any([x for x in re.findall("[0-9]sec", f) if x in self.test_seconds])
+            and any([x for x in re.findall("[\d]sec|[\d][\d]sec", f) if x in self.test_seconds])
         ]
 
         print("test_files", self.test_files)
@@ -112,12 +112,13 @@ class DejavuTest:
             log_msg(f'file: {f}')
 
             # get column
-            col = self.get_column_id([x for x in re.findall("[0-9]sec", f) if x in self.test_seconds][0])
-
+            # col = self.get_column_id([x for x in re.findall("[0-9]sec", f) if x in self.test_seconds][0])
+            col = self.get_column_id([x for x in re.findall("[\d]sec|[\d][\d]sec", f) if x in self.test_seconds][0])
             # format: XXXX_offset_length.mp3, we also take into account underscores within XXXX
             splits = get_audio_name_from_path(f).split("_")
             song = "_".join(splits[0:len(get_audio_name_from_path(f).split("_")) - 2])
             line = self.get_line_id(song)
+            print("col:" + str(col) + " line:" + str(line))
             result = subprocess.check_output([
                 "python3",
                 "dejavu.py",
@@ -135,7 +136,11 @@ class DejavuTest:
             else:
                 result = result.strip()
                 # we parse the output song back to a json
-                result = json.loads(result.decode('utf-8').replace("'", '"').replace(': b"', ':"'))
+                # result = result.decode('utf-8').replace("'", '"').replace(': b"', ':"')
+                result = result.decode('utf-8')
+                result = result.replace("{'", '{"').replace(", '", ', "').replace(": '", ': "').replace("':", '":').replace("',", '",').replace("'}", '"}')
+                result = result.replace(": b'", ':"')
+                result = json.loads(result)
 
                 # which song did we predict? We consider only the first match.
                 match = result[RESULTS][0]

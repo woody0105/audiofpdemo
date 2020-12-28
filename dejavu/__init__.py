@@ -93,7 +93,7 @@ class Dejavu:
             # don't refingerprint already fingerprinted files
             if decoder.unique_hash(filename) in self.songhashes_set:
                 print(f"{filename} already fingerprinted, continuing...")
-                os.remove(filename)
+                # os.remove(filename)
                 continue
 
             filenames_to_fingerprint.append(filename)
@@ -215,9 +215,9 @@ class Dejavu:
 
             song = {
                 SONG_ID: song_id,
-                SONG_NAME: song_name.encode("utf8"),
-                FIELD_SONGTITLE: song_title.encode("utf8"),
-                FIELD_ARTIST: artist.encode("utf8"),
+                SONG_NAME: song_name,
+                FIELD_SONGTITLE: song_title,
+                FIELD_ARTIST: artist,
                 INPUT_HASHES: queried_hashes,
                 FINGERPRINTED_HASHES: song_hashes,
                 HASHES_MATCHED: hashes_matched,
