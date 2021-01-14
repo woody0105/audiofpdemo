@@ -44,7 +44,9 @@ Issue:
     solution:ALTER DATABASE dejavu CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
     		 ALTER TABLE dejavu.songs CONVERT TO CHARACTER SET utf8;
 
-	
+Issue:
+	panic occurred: interface conversion: interface {} is nil, not []interface{}
+	cause: path environment variable fails to reference proper ffmpeg or python3.
 
 	
 
