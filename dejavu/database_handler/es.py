@@ -5,6 +5,9 @@ from elasticsearch import Elasticsearch
 from elasticsearch.helpers import bulk
 import random
 
+ELASTIC_USER = 'elastic'
+ELASTIC_PASS = 'qNq0dMcBw3Zs1hAFGnTi'
+
 class Fingerprints(Document):
     hash = Keyword()
     song_id = Integer()
@@ -29,9 +32,9 @@ class Songs(Document):
 
 class Es:
     def __init__(self):
-        connections.create_connection(hosts=['localhost'])
+        connections.create_connection(hosts=['localhost'], http_auth=(ELASTIC_USER, ELASTIC_PASS))
         self.elasticClient = Elasticsearch(
-            ["localhost:9200"],
+            ["localhost:9200"], http_auth=(ELASTIC_USER, ELASTIC_PASS)
         )
     def insert_hash(self, title, artist, song_id:int, fingerprint: str, offset:int):
         """
@@ -141,7 +144,7 @@ class Es:
             # query = self.SELECT_MULTIPLE % ', '.join([self.IN_MATCH] * len(values[index: index + batch_size]))
 
             res = self.elasticClient.search(index="fingerprints",
-                            body={"query": {"terms": {"doc.hash": values[index: index+batch_size]}}})
+                            body={"query": {"terms": {"doc.hash": values[index: index+batch_size]}}}, size=1000)
             # res = self.elasticClient.search(index="fingerprints", body={"query": {"match": {"fingerprinted": True}}})
             query_res = res['hits']['hits']
             for doc in query_res:
@@ -156,4 +159,4 @@ class Es:
                 for song_sampled_offset in mapper[hsh]:
                     results.append((sid, offset - song_sampled_offset))
 
-            return results, dedup_hashes
+        return results, dedup_hashes

@@ -4,7 +4,7 @@ import sys
 from argparse import RawTextHelpFormatter
 from os.path import isdir
 
-from dejavu import Dejavu
+from dejavu import Dejavu, Dejavu_Es
 from dejavu.logic.recognizer.file_recognizer import FileRecognizer
 from dejavu.logic.recognizer.microphone_recognizer import MicrophoneRecognizer
 
@@ -55,7 +55,8 @@ if __name__ == '__main__':
     if config_file is None:
         config_file = DEFAULT_CONFIG_FILE
 
-    djv = init(config_file)
+    # djv = init(config_file)
+    djv = Dejavu_Es()
     if args.fingerprint:
         # Fingerprint all files in a directory
         if len(args.fingerprint) == 2:
@@ -66,6 +67,7 @@ if __name__ == '__main__':
 
         elif len(args.fingerprint) == 1:
             filepath = args.fingerprint[0]
+            djv = Dejavu_Es()
             if isdir(filepath):
                 print("Please specify an extension if you'd like to fingerprint a directory!")
                 sys.exit(1)
