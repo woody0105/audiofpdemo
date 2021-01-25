@@ -103,7 +103,7 @@ class Es:
         song.save()
 
     def get_songs(self):
-        res = self.elasticClient.search(index="songs", body={"query": {"match": {"fingerprinted": True}}})
+        res = self.elasticClient.search(index="songs", body={"query": {"match": {"fingerprinted": True}}}, size=10000)
         return res['hits']['hits']
 
     def get_song_by_id(self, song_id: int):
