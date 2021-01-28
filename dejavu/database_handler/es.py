@@ -144,8 +144,8 @@ class Es:
             # query = self.SELECT_MULTIPLE % ', '.join([self.IN_MATCH] * len(values[index: index + batch_size]))
 
             res = self.elasticClient.search(index="fingerprints",
-                            body={"query": {"terms": {"doc.hash": values[index: index+batch_size]}}}, size=1000)
-            # res = self.elasticClient.search(index="fingerprints", body={"query": {"match": {"fingerprinted": True}}})
+                            body={"query": {"terms": {"doc.hash": values[index: index+batch_size]}}}, size=1000000)
+
             query_res = res['hits']['hits']
             for doc in query_res:
                 hsh = doc['_source']['doc']['hash']
